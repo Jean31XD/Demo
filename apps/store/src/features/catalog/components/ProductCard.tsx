@@ -36,7 +36,7 @@ const ProductCard: React.FC<Props> = memo(({ product }) => {
   const [inputVal, setInputVal] = useState('1');
   const [added, setAdded] = useState(false);
 
-  const img = product.images[0];
+  const img = product.images?.[0];
   const isOnSale = product.compareAtPrice && product.compareAtPrice > product.price;
   const inStock = product.inventory.available;
   const discount = isOnSale
