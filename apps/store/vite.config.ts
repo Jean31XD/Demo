@@ -6,6 +6,9 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
 
+  // Sub-path for GitHub Pages: https://jean31xd.github.io/Demo/
+  base: process.env.GITHUB_ACTIONS ? '/Demo/' : '/',
+
   resolve: {
     alias: {
       // Permite imports como: import Foo from '@/components/Foo'
