@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { createBrowserRouter, RouterProvider, Outlet, Navigate } from 'react-router-dom';
+import { createHashRouter, RouterProvider, Outlet, Navigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth.store';
 import AdminLayout from '@/components/layout/AdminLayout';
 import PageLoader from '@/components/common/PageLoader';
@@ -41,7 +41,7 @@ const PublicRoot: React.FC = () => {
   );
 };
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: '/login',
     element: <PublicRoot />,

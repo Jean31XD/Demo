@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect } from 'react';
-import { createBrowserRouter, RouterProvider, Outlet, useLocation } from 'react-router-dom';
+import { createHashRouter, RouterProvider, Outlet, useLocation } from 'react-router-dom';
 import MainLayout from '@/components/layout/MainLayout';
 import PageLoader from '@/components/common/PageLoader';
 
@@ -45,7 +45,7 @@ const RootLayout: React.FC = () => (
   </Suspense>
 );
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: '/',
     element: <RootLayout />,
