@@ -4,6 +4,10 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
+
+  // Admin deploys to /Demo/admin/ on GitHub Pages
+  base: process.env.GITHUB_ACTIONS ? '/Demo/admin/' : '/',
+
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
   },

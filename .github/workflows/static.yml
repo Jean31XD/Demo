@@ -30,12 +30,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build store
+      - name: Build store (/)
         working-directory: apps/store
         run: npm run build
         env:
           GITHUB_ACTIONS: true
           VITE_GRAPHQL_ENDPOINT: ""
+
+      - name: Build admin (/admin/)
+        working-directory: apps/admin
+        run: npm run build
+        env:
+          GITHUB_ACTIONS: true
+          VITE_GRAPHQL_ENDPOINT: ""
+
+      - name: Merge admin into store dist
+        run: |
+          mkdir -p apps/store/dist/admin
+          cp -r apps/admin/dist/. apps/store/dist/admin/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
