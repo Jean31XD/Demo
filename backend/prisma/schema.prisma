@@ -1,0 +1,97 @@
+// Prisma Schema — E-commerce Platform
+// Demo: SQLite | Producción: cambiar provider a "postgresql"
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // Para producción: provider = "postgresql", url = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CATÁLOGO
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Product {
+  id             String      @id @default(cuid())
+  name           String
+  slug           String      @unique
+  description    String?
+  price          Float
+  compareAtPrice Float?
+  sku            String?     @unique
+  brand          String?
+  // SQLite no soporta JSON nativo — se almacena como String y se parsea
+  images         String      @default("[]")
+  attributes     String      @default("[]")
+  categoryId     String
+  category       Category    @relation(fields: [categoryId], references: [id])
+  inventory      Inventory?
+  orderItems     OrderItem[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model Inventory {
+  id        String   @id @default(cuid())
+  productId String   @unique
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CLIENTES Y AUTENTICACIÓN
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Customer {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String   // bcrypt hash — nunca texto plano
+  phone     String?
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ÓRDENES
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Order {
+  id           String      @id @default(cuid())
+  customerId   String
+  customer     Customer    @relation(fields: [customerId], references: [id])
+  items        OrderItem[]
+  total        Float
+  status       String      @default("PENDING") // SQLite no soporta enum nativo
+  shippingAddr String?     // JSON serializado
+  notes        String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  // Snapshot del precio en el momento de la compra
+  unitPrice Float
+}
